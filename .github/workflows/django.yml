@@ -7,7 +7,7 @@ on:
     branches: [ "main" ]
 
 jobs:
-  build:
+  test:
     runs-on: self-hosted
     steps:
     - uses: actions/checkout@v4
@@ -20,7 +20,6 @@ jobs:
 
     - name: Install the project
       run: uv sync --locked --all-extras --dev
-
+      
     - name: Run tests
-      # For example, using `pytest`
       run: uv run src/manage.py test
