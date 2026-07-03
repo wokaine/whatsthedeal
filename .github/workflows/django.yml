@@ -19,4 +19,11 @@ jobs:
       run: uv sync --locked --all-extras --dev --python-preference managed
       
     - name: Run tests
+      env:
+        # Pass the GitHub Secrets into the runner's environment execution context
+        POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
+        POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+        POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+        POSTGRES_HOST: "localhost"
+        POSTGRES_PORT: "5432"
       run: uv run src/manage.py test src/
