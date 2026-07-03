@@ -10,7 +10,7 @@ WORKDIR /app
 RUN --mount=type=cache,target=/root/.cache/uv \
     --mount=type=bind,source=uv.lock,target=uv.lock \
     --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
-    uv sync --frozen --no-install-project --no-dev
+    uv sync --frozen --no-install-project --no-dev --group prod
 
 # --- Stage 2: Final runtime image ---
 FROM python:3.14-slim-bookworm
@@ -34,4 +34,4 @@ EXPOSE 8000
 
 # Run migrations and start production server (e.g., gunicorn)
 # Note: In real CD, migrations are usually run as a separate deploy step
-CMD ["/app/.venv/bin/gunicorn", "--bind", "0.0.0.0:8000", "src.wsgi:application"]
+CMD ["gunicorn", "--bind", "0.0.0.0:8000", "src.wsgi:application"]
