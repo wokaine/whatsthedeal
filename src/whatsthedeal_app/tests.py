@@ -234,7 +234,7 @@ class PostWorkflowTests(TestCase):
 
         self.assertEqual(response.status_code, 302)
         post = Post.objects.get(description="Booths double side deal")
-        self.assertEqual(post.user.username, "guest_user")
+        self.assertEqual(post.user.username, "anonymous")
         self.assertEqual(post.meal_deal.entries.count(), 4)
         self.assertEqual(post.meal_deal.items.count(), 4)
 
