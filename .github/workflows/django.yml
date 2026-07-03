@@ -55,6 +55,6 @@ jobs:
     # Pull the fresh image onto the VPS host and restart the container
     - name: Deploy to VPS via Docker Compose
       run: |
-        cd /home/your-user/production-app/
+        cd /home/ezra/deployments/whatsthedeal
         docker compose pull web
         docker compose up -d web
