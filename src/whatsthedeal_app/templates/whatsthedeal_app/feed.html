@@ -1,0 +1,63 @@
+<!-- templates/whatsthedeal_app/feed.html -->
+{% extends "base.html" %}
+
+{% block title %}Feed{% endblock %}
+
+{% block content %}
+  <div class="feed-container container">
+    <div class="feed-top">
+      <form class="filter" method="get">
+          <label for="filter">Filter by:</label>
+          <select name="filter" id="filter">
+              <option value="newest" {% if filter == 'newest' %}selected{% endif %}>Newest</option>
+              <option value="most-likes" {% if filter == 'most-likes' %}selected{% endif %}>Most Likes</option>
+              <option value="most-dislikes" {% if filter == 'most-dislikes' %}selected{% endif %}>Most Dislikes</option>
+          </select>
+          <button class="btn btn-cream" type="submit">Filter</button>
+      </form>
+      <div class="share">
+        <a class="btn btn-primary" href="{% url 'whatsthedeal:post-create' %}">Share your meal deal</a>
+      </div>
+    </div>
+
+    <div class="feed-grid">
+    {% for p in feed %}
+      <article class="post-card supermarket-{{ p.supermarket|lower|cut:"'"|cut:"-" }}">
+        <div>
+          <div class="meta">
+            <small class="small">Posted: {{ p.date }}</small>
+          </div>
+          <h3>By: {{ p.user }}</h3>
+          <p><b>Main:</b> {{ p.components.0 }}<p>
+          {% if p.components|length > 3 %}
+            <p><b>Sides:</b> {{ p.components.1 }}, {{ p.components.2 }}</p>
+            <p><b>Drink:</b> {{ p.components.3 }}</p>
+          {% else %}
+            <p><b>Side:</b> {{ p.components.1 }}</p>
+            <p><b>Drink:</b> {{ p.components.2 }}</p>
+          {% endif %}
+        </div>
+        {% if p.image %}
+          <img src="{{ p.image.url }}" alt="Meal deal image" style="max-width:100%; border-radius:8px; margin-top:0.5rem">
+        {% endif %}
+
+        <div style="display:flex; gap:0.5rem; align-items:center; margin-top:0.6rem">
+          <a class="btn btn-cream" href="{% url 'whatsthedeal:post-view' p.id %}">View</a>
+          {% if user.is_authenticated %}
+            <form method="POST" action="/posts/{{ p.id }}/preference/1/" style="display:inline">
+              {% csrf_token %}
+              <button class="btn" type="submit">👍({{ p.likes }})</button>
+            </form>
+            <form method="POST" action="/posts/{{ p.id }}/preference/2/" style="display:inline">
+              {% csrf_token %}
+              <button class="btn" type="submit">👎 ({{ p.dislikes }})</button>
+            </form>
+          {% endif %}
+        </div>
+      </article>
+    {% empty %}
+      <p>No posts yet.</p>
+    {% endfor %}
+    </div>
+  </div>
+{% endblock %}

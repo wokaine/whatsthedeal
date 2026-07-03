@@ -1,0 +1,49 @@
+<!-- templates/whatsthedeal_app/view.html -->
+{% extends "base.html" %}
+
+{% block title %}View Post{% endblock %}
+
+{% block content %}
+    <div class="container" style="max-width:760px; margin:1.25rem auto">
+        <article class="post-card supermarket-{{ post.supermarket|lower|cut:" " }}">
+            <div>
+                <div class="meta">
+                    <strong>Posted by: {{ post.user }}</strong>
+                    <small class="small">Posted: {{ post.date }}</small>
+                </div>
+                <br>
+                <p><b>Supermarket:</b> {{ post.supermarket }}</p>
+                <p><b>Main:</b> {{ post.components.0 }}</p>
+                {% if post.components|length > 3 %}
+                    <p><b>Sides:</b> {{ post.components.1 }}, {{ post.components.2 }}</p>
+                    <p><b>Drink:</b> {{ post.components.3 }}</p>
+                {% else %}
+                    <p><b>Side:</b> {{ post.components.1 }}</p>
+                    <p><b>Drink:</b> {{ post.components.2 }}</p>
+                {% endif %}
+                <br>
+                {% if not post.description == "" %}
+                    <p><b>Description:</b><p>
+                    <p>{{ post.description }}</p>
+                {% endif %}
+            </div>
+
+            {% if post.image %}
+                <img src="{{ post.image.url }}" alt="Meal deal image" style="max-width:100%; border-radius:8px; margin-top:0.5rem">
+            {% endif %}
+
+            {% if user.is_authenticated %}
+                <div style="display:flex; gap:0.5rem; align-items:center; margin-top:0.6rem">
+                    <form id="likebutton" method="POST" action="/posts/{{post.id}}/preference/1/" style="display:inline">
+                        {% csrf_token %}
+                        <button class="btn btn-ghost" type="submit">Like ({{ post.likes }})</button>
+                    </form>
+                    <form id="dislikebutton" method="POST" action="/posts/{{post.id}}/preference/2/" style="display:inline">
+                        {% csrf_token %}
+                        <button class="btn btn-ghost" type="submit">Dislike ({{ post.dislikes }})</button>
+                    </form>
+                </div>
+            {% endif %}
+        </article>
+    </div>
+{% endblock %}

@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block title %}Sign Up{% endblock %}
+
+{% block content %}
+  <div class="container auth-signup" style="max-width:520px; margin:2rem auto">
+    <div class="form-card">
+      <h2 class="center">Create an account</h2>
+      <form method="post" action="{% url 'account_signup' %}">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+        {% for field in form %}
+          <div class="form-row">
+            {{ field.label_tag }}
+            {{ field }}
+            {% if field.help_text %}<small class="small">{{ field.help_text }}</small>{% endif %}
+            {% if field.errors %}<div class="small" style="color:#b00020">{{ field.errors }}</div>{% endif %}
+          </div>
+        {% endfor %}
+
+        <div class="form-actions">
+          <button class="btn btn-primary" type="submit">Sign Up</button>
+        </div>
+      </form>
+      <p class="center small">Already have an account? <a href="{% url 'account_login' %}">Log in</a></p>
+    </div>
+  </div>
+{% endblock %}

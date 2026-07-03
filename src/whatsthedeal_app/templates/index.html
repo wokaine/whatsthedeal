@@ -1,0 +1,17 @@
+<!-- templates/home.html -->
+{% extends "base.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+    <section class="index-hero">
+        <div>
+            <h1>Welcome to What's the Deal</h1>
+            <p class="sub">The home of the best (and worst) meal deal combinations in the country.</p>
+            <div class="hero-actions">
+                <a class="btn btn-cream" href="{% url 'whatsthedeal:post-list' %}">See others</a>
+                <a class="btn btn-primary" href="{% url 'whatsthedeal:post-create' %}">Share yours</a>
+            </div>
+        </div>
+    </section>
+{% endblock %}

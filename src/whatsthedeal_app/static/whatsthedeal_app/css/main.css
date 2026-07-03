@@ -1,0 +1,233 @@
+/* Main stylesheet for WhatstheDeal
+   - Primary: sky blue (#3aa7ff)
+   - Secondary: cream (#fff8ef)
+   - Modern, simple, responsive
+*/
+:root{
+  --primary: #3aa7ff; /* sky blue */
+  --primary-600: #2f98e6;
+  --secondary: #fff8ef; /* cream */
+  --bg: #f6f9fb;
+  --text: #000000;
+  --text-inverse: #ffffff;
+  --muted: #5b6b72;
+  --card-radius: 12px;
+  --container-max: 1200px;
+}
+
+*{box-sizing: border-box}
+html,body{height:100%}
+body{
+  margin:0;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  background:var(--bg);
+  color:var(--text);
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+}
+
+.container{
+  max-width:var(--container-max);
+  margin:0 auto;
+  padding:1rem;
+}
+
+/* NAVBAR */
+.navbar{
+  display:flex;
+  align-items:center;
+  gap:1rem;
+  padding:0.75rem 1rem;
+  background:linear-gradient(180deg, rgba(255,255,255,0.6), rgba(255,255,255,0.9));
+  border-bottom:1px solid rgba(16,32,39,0.06);
+  position:sticky;
+  top:0;
+  z-index:40;
+  backdrop-filter: blur(6px);
+}
+.navbar .brand{
+  font-weight:700;
+  font-size:1.125rem;
+  color:var(--primary-600);
+}
+.navbar .nav-links{
+  margin-left:auto; /* push to right */
+  display:flex;
+  gap:0.5rem;
+  align-items:center;
+}
+.navbar a{ text-decoration:none; color:var(--text); padding:0.45rem 0.6rem; border-radius:8px }
+.navbar a:hover{ color:var(--text); background:rgba(0,0,0,0.03) }
+
+/* Buttons */
+.btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:0.5rem;
+  padding:0.55rem 0.9rem;
+  border-radius:10px;
+  border:none;
+  cursor:pointer;
+  font-weight:600;
+  text-decoration:none;
+}
+
+.btn:focus{outline:3px solid rgba(58,167,255,0.16)}
+.btn-primary{background:var(--primary); color:white; box-shadow: 0 6px 18px rgba(58,167,255,0.12)}
+.btn-cream{background:var(--secondary); color:var(--text); border:1px solid rgba(16,32,39,0.06)}
+
+/* INDEX HERO */
+.index-hero{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  padding:6rem 1rem;
+  gap:1.25rem;
+}
+.index-hero h1{
+  margin:0;
+  font-size:clamp(2rem, 4.8vw, 4rem);
+  line-height:1;
+  color:var(--text);
+}
+.index-hero p.sub{
+  margin:0.5rem 0 1.25rem 0;
+  color:var(--muted);
+  font-size:1.05rem;
+}
+.hero-actions{display:flex; gap:0.75rem; justify-content:center}
+.hero-actions .btn{min-width:140px}
+
+/* FEED LAYOUT */
+.feed-wrapper{padding:1.25rem}
+/* Top bar containing filter + share (persistent) */
+.feed-top{
+  position:sticky;
+  top:0.5rem;
+  z-index:30;
+  display:flex;
+  gap:1rem;
+  align-items:center;
+  padding:0.6rem 1rem;
+  margin-bottom:0.85rem;
+  background:linear-gradient(180deg, rgba(255,255,255,0.65), rgba(255,255,255,0.9));
+  border-radius:12px;
+  box-shadow:0 6px 18px rgba(16,32,39,0.04);
+}
+.feed-top .filter{display:flex; gap:0.6rem; align-items:center}
+.feed-top .share{margin-left:auto}
+
+.feed-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit, minmax(260px, 1fr));
+  gap:1rem;
+  align-items:start;
+}
+.post-card{
+  border-radius:var(--card-radius);
+  padding:1rem;
+  color:var(--text);
+  min-height:160px;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  box-shadow:0 6px 16px rgba(16,32,39,0.04);
+  transition:transform .12s ease, box-shadow .12s ease;
+}
+.post-card:hover{ transform:translateY(-6px); box-shadow:0 18px 36px rgba(16,32,39,0.08) }
+.post-card .meta{display:flex; justify-content:space-between; align-items:center; gap:0.5rem}
+.post-card h3{margin:0 0 0.4rem 0}
+.post-card p{margin:0; color:inherit; opacity:0.95}
+
+/* ensure small/meta text inherits and remains visible against card backgrounds */
+.post-card .meta small{ color:inherit; opacity:0.9 }
+
+/* supermarket-specific color cues */
+.post-card.supermarket-tesco{ background:linear-gradient(180deg,#00539f, #0165c3); color:white }
+.post-card.supermarket-sainsburys{ background:linear-gradient(180deg,#ff6f00,#ff6200); color:white }
+.post-card.supermarket-asda{ background:linear-gradient(180deg,#78c043,#6eb63a); color:white }
+.post-card.supermarket-morrisons{ background:linear-gradient(180deg,#ffd400,#ffcf00); color:#102027 }
+.post-card.supermarket-coop{ background:linear-gradient(180deg, #01b1dd, #0093b8); color:white }
+.post-card.supermarket-booths{ background:linear-gradient(180deg,#666666,#9d9d9d); color:white }
+
+/* supermarkets with black title and white text */
+.post-card.supermarket-tesco h3,
+.post-card.supermarket-asda h3,
+.post-card.supermarket-coop h3,
+.post-card.supermarket-sainsburys h3 {
+    color:var(--text);
+}
+.post-card.supermarket-tesco p,
+.post-card.supermarket-tesco .meta small,
+.post-card.supermarket-sainsburys p,
+.post-card.supermarket-sainsburys .meta small{
+  color:var(--text-inverse);
+  text-shadow:0 1px 2px rgba(0,0,0,0.32);
+}
+
+/* supermarkets with white title and black text */
+.post-card.supermarket-booths h3 {
+    color:var(--text-inverse);
+}
+.post-card.supermarket-booths p,
+.post-card.supermarket-booths .meta small{
+  color:var(--text);
+  text-shadow:none;
+}
+.post-card.supermarket-default{ background:var(--secondary); }
+
+/* small pill tags inside cards */
+.pill{background:rgba(255,255,255,0.16); padding:0.25rem 0.5rem; border-radius:999px; font-size:0.85rem}
+
+/* Responsive feed container centering */
+.feed-container{max-width:var(--container-max); margin:0 auto}
+
+/* FORMS */
+.form-card{background:white; padding:1rem; border-radius:12px; box-shadow:0 8px 20px rgba(16,32,39,0.04)}
+.form-row{display:flex; flex-direction:column; gap:0.5rem; margin-bottom:0.75rem}
+label{font-weight:600; color:var(--muted); font-size:0.95rem}
+input[type=text], input[type=email], input[type=password], textarea, select{
+  padding:0.65rem 0.75rem; border-radius:10px; border:1px solid rgba(16,32,39,0.06);
+  background:linear-gradient(180deg, #fff, #fbfdff);
+}
+textarea{min-height:110px; resize:vertical}
+.form-actions{display:flex; gap:0.5rem; justify-content:flex-end}
+
+/* Small utilities */
+.kv{display:flex; gap:0.5rem; align-items:center}
+.small{font-size:0.85rem; color:var(--muted)}
+.center{text-align:center}
+
+/* Accessibility helpers */
+.visually-hidden{position:absolute!important;clip:rect(1px,1px,1px,1px);padding:0;border:0;height:1px;width:1px;overflow:hidden}
+
+
+/* Media tweaks */
+@media (min-width:1000px){
+  .index-hero{padding:8rem 1rem}
+  .feed-top{padding:0.8rem 1.2rem}
+}
+
+@media (max-width:640px){
+  .navbar .brand{font-size:1rem}
+  .feed-top{flex-direction:column; align-items:stretch}
+  .feed-top .share{margin-left:0; align-self:flex-end}
+}
+
+/* FOOTER */
+.site-footer{
+  text-align:center;
+  padding:1.25rem 1rem;
+  margin-top:2rem;
+  background:var(--secondary);
+  color:var(--text);
+  border-top:1px solid rgba(16,32,39,0.06);
+  border-radius:10px;
+  box-shadow:0 8px 20px rgba(16,32,39,0.04);
+}
+.site-footer p{margin:0.25rem 0}
+.site-footer a{color:var(--primary); text-decoration:underline}
+
+/* End of stylesheet */
