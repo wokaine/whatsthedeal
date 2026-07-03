@@ -166,3 +166,5 @@ MEDIA_URL = "media/"
 MEDIA_ROOT = BASE_DIR / "media" # CHANGE IN PROD
 
 ACCOUNT_USER_MODEL_EMAIL_FIELD = None
+ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS","127.0.0.1").split(",")
+DEBUG = bool(os.environ.get("DEBUG", default=1))

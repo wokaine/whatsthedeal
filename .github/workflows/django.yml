@@ -1,4 +1,4 @@
-name: Django CI
+name: Django CI/CD
 
 on:
   push:
@@ -7,6 +7,7 @@ on:
     branches: [ "main" ]
 
 jobs:
+# --- JOB 1: Test the Application ---
   test:
     runs-on: self-hosted
     steps:
@@ -22,3 +23,38 @@ jobs:
       env:
         DJANGO_ENV: development
       run: uv run src/manage.py test src/
+
+# --- JOB 2: Build, Push, and Deploy (CD) ---
+  deploy:
+    needs: test # Only runs if the test job passes successfully
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push' # Only deploy on merges to main
+    runs-on: self-hosted # Runs locally on your VPS where Docker is installed
+    
+    steps:
+    - uses: actions/checkout@v4
+
+    # Log into Docker Hub using the secrets created in Step 1
+    - name: Log in to Docker Hub
+      uses: docker/login-action@v3
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+    # Build the image and push it to Docker Hub
+    - name: Build and push Docker image
+      uses: docker/build-push-action@v6
+      with:
+        context: .
+        file: ./Dockerfile
+        push: true
+        # Tag it with 'latest' and the specific git commit hash for tracking
+        tags: |
+          ${{ secrets.DOCKERHUB_USERNAME }}/whatsthedeal:latest
+          ${{ secrets.DOCKERHUB_USERNAME }}/whatsthedeal:${{ github.sha }}
+
+    # Pull the fresh image onto the VPS host and restart the container
+    - name: Deploy to VPS via Docker Compose
+      run: |
+        cd /home/your-user/production-app/
+        docker compose pull web
+        docker compose up -d web
