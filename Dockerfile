@@ -33,5 +33,4 @@ COPY src/ /app/src/
 EXPOSE 8000
 
 # Run migrations and start production server (e.g., gunicorn)
-# Note: In real CD, migrations are usually run as a separate deploy step
 CMD ["gunicorn", "--bind", "0.0.0.0:8000", "src.wsgi:application"]
