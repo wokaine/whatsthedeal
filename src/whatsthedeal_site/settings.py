@@ -168,4 +168,4 @@ STATIC_ROOT = BASE_DIR / "static"
 
 ACCOUNT_USER_MODEL_EMAIL_FIELD = None
 ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS","127.0.0.1").split(",")
-DEBUG = bool(os.environ.get("DEBUG", default=1))
+DEBUG = True if os.environ.get("DEBUG") == 1 else False
