@@ -23,8 +23,7 @@ COPY --from=builder /app/.venv /app/.venv
 # Place the virtual environment at the front of the PATH
 ENV PATH="/app/.venv/bin:$PATH" \
     DJANGO_ENV=production \
-    PYTHONUNBUFFERED=1 \
-    DEBUG=False
+    PYTHONUNBUFFERED=1
 
 # Copy your source code
 COPY src/ /app/src/

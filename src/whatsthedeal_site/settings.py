@@ -165,9 +165,9 @@ LOGOUT_REDIRECT_URL = "/"
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
-STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATIC_URL = "/static/"
+STATIC_ROOT = BASE_DIR / "static"
 
 ACCOUNT_USER_MODEL_EMAIL_FIELD = None
 ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS","127.0.0.1").split(",")
-DEBUG = os.environ.get("DEBUG", default=True)
+DEBUG = bool(os.environ.get("DEBUG", default=1))
