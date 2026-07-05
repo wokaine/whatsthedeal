@@ -6,9 +6,9 @@ class PostCreateForm(forms.Form):
         queryset=Supermarket.objects.all(),
         empty_label=None
     )
-    main = forms.CharField(max_length=100)
-    side = forms.CharField(max_length=100)
+    main = forms.CharField(max_length=100, required=True)
+    side = forms.CharField(max_length=100, required=True)
     side_2 = forms.CharField(max_length=100, required=False)
-    drink = forms.CharField(max_length=100)
+    drink = forms.CharField(max_length=100, required=True)
     description = forms.CharField(widget=forms.Textarea, required=False)
     image = forms.ImageField(required=False)

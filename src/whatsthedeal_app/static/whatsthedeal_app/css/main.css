@@ -194,6 +194,22 @@ input[type=text], input[type=email], input[type=password], textarea, select{
 }
 textarea{min-height:110px; resize:vertical}
 .form-actions{display:flex; gap:0.5rem; justify-content:flex-end}
+.required label:after {
+  content: " *";
+  color: red;
+}
+.messages {
+  border-style: solid;
+  border-width: 2px;
+  border-color: rgb(255, 52, 52);
+  background-color: #ffe6e6;
+  list-style-type: none;
+  border-radius: 12px;
+  padding: 2%;
+}
+.messages li {
+  color: red;
+}
 
 /* Small utilities */
 .kv{display:flex; gap:0.5rem; align-items:center}

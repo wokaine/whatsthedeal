@@ -2,6 +2,7 @@ import json
 
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 
 from django.shortcuts import render, redirect, get_object_or_404
 from django.utils.http import url_has_allowed_host_and_scheme
@@ -69,6 +70,15 @@ def create_post(request):
                 image=image,
             )
             return redirect("whatsthedeal:post-list")
+        else:
+            # Clear old messages
+            storage = messages.get_messages(request)
+            storage.used = True
+            messages.add_message(request, messages.WARNING, "Something went wrong:")
+            if "image" in form.errors:
+                messages.add_message(request, messages.ERROR, "Please upload a valid image file.")
+            else:
+                messages.add_message(request, messages.ERROR, "Please make sure you have filled all the required fields.")
     else:
         form = PostCreateForm()
 

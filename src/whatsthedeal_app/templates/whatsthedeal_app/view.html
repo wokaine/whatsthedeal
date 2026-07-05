@@ -5,7 +5,7 @@
 
 {% block content %}
     <div class="container" style="max-width:760px; margin:1.25rem auto">
-        <article class="post-card supermarket-{{ post.supermarket|lower|cut:" " }}">
+        <article class="post-card supermarket-{{ post.supermarket|lower|cut:"'"|cut:"-" }}">
             <div>
                 <div class="meta">
                     <strong>Posted by: {{ post.user }}</strong>

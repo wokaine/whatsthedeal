@@ -11,17 +11,26 @@
     {% endif %}
 
     <div class="form-card">
+      {% if messages %}
+        <ul class="messages">
+          {% for message in messages %}
+            <li>
+              {{ message }}
+            </li>
+          {% endfor %}
+        </ul>
+      {% endif %}
       <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
-        <div class="form-row">
+        <div class="form-row required">
           {{ form.supermarket.label_tag }}
           {{ form.supermarket }}
         </div>
-        <div class="form-row">
+        <div class="form-row required">
           {{ form.main.label_tag }}
           {{ form.main }}
         </div>
-        <div class="form-row">
+        <div class="form-row required">
           {{ form.side.label_tag }}
           {{ form.side }}
         </div>
@@ -29,7 +38,7 @@
           {{ form.side_2.label_tag }}
           {{ form.side_2 }}
         </div>
-        <div class="form-row">
+        <div class="form-row required">
           {{ form.drink.label_tag }}
           {{ form.drink }}
         </div>
