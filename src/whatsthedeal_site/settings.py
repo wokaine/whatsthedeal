@@ -26,7 +26,8 @@ SECRET_KEY = 'django-insecure-g8_u5+=l8cqe4xe6^zcbdy8xglz=aet8%k3=t55il+*7+0+=xo
 
 # SECURITY WARNING: don't run with debug turned on in production!
 ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS","127.0.0.1").split(",")
-DEBUG = False if os.environ.get("DEBUG") == 0 else True
+CSRF_TRUSTED_ORIGINS=['https://*.freddiebutterfield.com', 'https://*.127.0.0.1']
+DEBUG = False if os.environ.get("DEBUG") == "0" else True
 
 
 # Application definition
