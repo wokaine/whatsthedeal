@@ -22,8 +22,8 @@
           {{ form.main }}
         </div>
         <div class="form-row">
-          {{ form.side_1.label_tag }}
-          {{ form.side_1 }}
+          {{ form.side.label_tag }}
+          {{ form.side }}
         </div>
         <div class="form-row" id="side-2-row" style="display: none;">
           {{ form.side_2.label_tag }}
@@ -57,7 +57,7 @@
     function updateSide2() {
       const selected = supermarketSelect.options[supermarketSelect.selectedIndex].text;
       if (multiSideSupermarkets.includes(selected)) {
-        side2Row.style.display = 'block';
+        side2Row.style.display = '';
       } else {
         side2Row.style.display = 'none';
       }

@@ -21,7 +21,6 @@ from .models import (
 
 MULTI_SIDE_SUPERMARKETS = {"Booths"}
 
-
 def index(request):
     return render(request, "index.html")
 
@@ -30,7 +29,7 @@ def create_post(request):
         form = PostCreateForm(request.POST, request.FILES)
         if form.is_valid():
             supermarket = form.cleaned_data["supermarket"]
-            sides = [form.cleaned_data["side_1"]]
+            sides = [form.cleaned_data["side"]]
             side_2 = form.cleaned_data["side_2"].strip()
             if side_2 and supermarket.name in MULTI_SIDE_SUPERMARKETS:
                 sides.append(side_2)

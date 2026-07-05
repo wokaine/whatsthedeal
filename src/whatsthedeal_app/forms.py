@@ -7,7 +7,7 @@ class PostCreateForm(forms.Form):
         empty_label=None
     )
     main = forms.CharField(max_length=100)
-    side_1 = forms.CharField(max_length=100)
+    side = forms.CharField(max_length=100)
     side_2 = forms.CharField(max_length=100, required=False)
     drink = forms.CharField(max_length=100)
     description = forms.CharField(widget=forms.Textarea, required=False)
