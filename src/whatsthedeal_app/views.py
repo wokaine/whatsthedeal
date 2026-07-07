@@ -9,7 +9,7 @@ from django.utils.http import url_has_allowed_host_and_scheme
 from django.views import generic
 from django.urls import reverse
 from django.core.exceptions import ObjectDoesNotExist
-from .forms import PostCreateForm
+from .forms import PostCreateForm, CommentForm
 
 from .models import (
     Item,
@@ -18,6 +18,7 @@ from .models import (
     MealDealItem,
     Post,
     Preference,
+    Comment,
 )
 
 MULTI_SIDE_SUPERMARKETS = {"Booths"}
@@ -134,8 +135,22 @@ class PostDetailView(generic.DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         post = [context.get("object") or self.object]
-        context["post"] = build_post_feed(posts=post)[0] # only has 1 item
+        context_post = build_post_feed(posts=post)[0] # only has 1 item
+        context["post"] = context_post
+        context["comments"] = Comment.objects.filter(post=context_post["id"])
+        context["form"] = CommentForm()
         return context
+
+    def post(self, request, *args, **kwargs):
+        pk = kwargs.get('pk')
+        obj = self.model.objects.get(id=pk)
+        user = request.user if request.user.is_authenticated else get_guest_user()
+        form = CommentForm(request.POST, request.FILES)
+        if form.is_valid():
+            content = form.cleaned_data["comment"]
+            Comment.objects.create(post=obj, user=user, content=content)
+        return redirect('whatsthedeal:post-view', pk=pk)
+
 
 @login_required
 def postpreference(request, postid, userpreference):

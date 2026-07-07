@@ -45,5 +45,31 @@
                 </div>
             {% endif %}
         </article>
+        <div style="gap:0.5rem; padding-top:1%;">
+            <h3>Share your thoughts</h3>
+            <div class="form-card">
+                <form method="post">
+                    {% csrf_token %} 
+                    <div class="form-row">
+                        {{ form.comment.label_tag }}
+                        {{ form.comment }}
+                    </div>
+
+                    <div class="form-actions">
+                        <button class="btn btn-primary" type="submit">Comment</button>
+                    </div>
+                </form>
+            </div>
+            <h3>What others think</h3>
+            <div class="feed-grid" style="padding-top:2%;">
+                {% for c in comments %}
+                    <div class="comment-card">
+                        <p><b>{{ c.user }}</b> says:</p>
+                        <p>{{ c.content }}</p>
+                        <p class="small">{{ c.created_at }}</p>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
     </div>
 {% endblock %}

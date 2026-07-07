@@ -148,3 +148,16 @@ class Preference(models.Model):
         elif self.value == 2:
             # 2 for dislike
             return f"{self.user} dislikes {self.post}"
+
+class Comment(models.Model):
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name="comments")
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="comments",
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    content = models.TextField()
+
+    def __str__(self):
+        return f"{self.user} - {self.post}"

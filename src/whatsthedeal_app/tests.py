@@ -14,6 +14,7 @@ from .models import (
     Post,
     Preference,
     Supermarket,
+    Comment
 )
 
 
@@ -237,6 +238,38 @@ class PostWorkflowTests(TestCase):
         self.assertEqual(post.user.username, "anonymous")
         self.assertEqual(post.meal_deal.entries.count(), 4)
         self.assertEqual(post.meal_deal.items.count(), 4)
+
+    def test_guest_user_can_comment(self):
+        self.client.logout()
+        self._create_post(description="Visible deal")
+        post = Post.objects.get(description="Visible deal")
+
+        response = self.client.post(
+            reverse("whatsthedeal:post-view", kwargs={'pk': post.id}),
+            {
+                "comment": "I don't like this meal deal!"
+            }
+        )
+
+        self.assertEqual(response.status_code, 302)
+        comment = Comment.objects.get(content="I don't like this meal deal!")
+        self.assertEqual(comment.user.username, "anonymous")
+
+    def test_user_can_comment(self):
+        self.client.force_login(self.user)
+        self._create_post(description="Visible deal")
+        post = Post.objects.get(description="Visible deal")
+
+        response = self.client.post(
+            reverse("whatsthedeal:post-view", kwargs={'pk': post.id}),
+            {
+                "comment": "I don't like this meal deal!"
+            }
+        )
+
+        self.assertEqual(response.status_code, 302)
+        comment = Comment.objects.get(content="I don't like this meal deal!")
+        self.assertEqual(comment.user, self.user)
 
 
 class ModelTests(TestCase):

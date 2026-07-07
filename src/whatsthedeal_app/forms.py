@@ -12,3 +12,6 @@ class PostCreateForm(forms.Form):
     drink = forms.CharField(max_length=100, required=True)
     description = forms.CharField(widget=forms.Textarea, required=False)
     image = forms.ImageField(required=False)
+
+class CommentForm(forms.Form):
+    comment = forms.CharField(widget=forms.Textarea, required=True)
