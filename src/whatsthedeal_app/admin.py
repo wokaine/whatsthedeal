@@ -6,6 +6,7 @@ from .models import (
     MealDealItem,
     MealDealSlot,
     MealDeal,
+    Comment,
 )
 
 # Register your models here.
@@ -15,3 +16,4 @@ admin.site.register(Supermarket)
 admin.site.register(MealDealItem)
 admin.site.register(MealDealSlot)
 admin.site.register(MealDeal)
+admin.site.register(Comment)
