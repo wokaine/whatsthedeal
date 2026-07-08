@@ -279,7 +279,18 @@ class UserProfileTests(TestCase):
         response = self.client.get(reverse("whatsthedeal:user-view", kwargs={"username": user.username}))
 
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.context["object"], user)
+        self.assertEqual(response.context["profile_user"], user)
+
+    def test_profile_view_does_not_shadow_logged_in_user(self):
+        logged_in_user = get_user_model().objects.create_user(username="viewer", password="secret123")
+        profile_user = get_user_model().objects.create_user(username="profile-user", password="secret123")
+        self.client.force_login(logged_in_user)
+
+        response = self.client.get(reverse("whatsthedeal:user-view", kwargs={"username": profile_user.username}))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context["user"], logged_in_user)
+        self.assertEqual(response.context["profile_user"], profile_user)
 
     def test_user_cannot_view_anonymous_user(self):
         guest_user = get_user_model().objects.create_user(username="anonymous", password="secret123")

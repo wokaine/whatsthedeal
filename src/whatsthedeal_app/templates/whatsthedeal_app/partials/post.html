@@ -1,0 +1,20 @@
+<article class="post-card supermarket-{{ p.supermarket|lower|cut:"'"|cut:"-" }}">
+    <div>
+        <div class="meta">
+        <small class="small">Posted: {{ post.date }}</small>
+        </div>
+        <h3>By: <a class="user-link" href="{% url 'whatsthedeal:user-view' username=p.user %}">{{ post.user }}</a></h3>
+        <p><b>Main:</b> {{ post.components.0 }}<p>
+        {% if p.components|length > 3 %}
+        <p><b>Sides:</b> {{ post.components.1 }}, {{ post.components.2 }}</p>
+        <p><b>Drink:</b> {{ post.components.3 }}</p>
+        {% else %}
+        <p><b>Side:</b> {{ post.components.1 }}</p>
+        <p><b>Drink:</b> {{ post.components.2 }}</p>
+        {% endif %}
+    </div>
+    {% if p.image %}
+        <img src="{{ post.image.url }}" alt="Meal deal image" style="max-width:100%; border-radius:8px; margin-top:0.5rem">
+    {% endif %}
+    {% include 'whatsthedeal_app/partials/like_dislike.html' with post=post %}
+</article>

@@ -1,0 +1,29 @@
+<article class="post-card supermarket-{{ post.supermarket|lower|cut:"'"|cut:"-" }}">
+    <div>
+        <div class="meta">
+            <strong>Posted by: <a class="user-link" href="{% url 'whatsthedeal:user-view' username=post.user %}">{{ post.user }}</a></strong>
+            <small class="small">Posted: {{ post.date }}</small>
+        </div>
+        <br>
+        <p><b>Supermarket:</b> {{ post.supermarket }}</p>
+        <p><b>Main:</b> {{ post.components.0 }}</p>
+        {% if post.components|length > 3 %}
+            <p><b>Sides:</b> {{ post.components.1 }}, {{ post.components.2 }}</p>
+            <p><b>Drink:</b> {{ post.components.3 }}</p>
+        {% else %}
+            <p><b>Side:</b> {{ post.components.1 }}</p>
+            <p><b>Drink:</b> {{ post.components.2 }}</p>
+        {% endif %}
+        <br>
+        {% if not post.description == "" %}
+            <p><b>Description:</b><p>
+            <p>{{ post.description }}</p>
+        {% endif %}
+    </div>
+
+    {% if post.image %}
+        <img src="{{ post.image.url }}" alt="Meal deal image" style="max-width:100%; border-radius:8px; margin-top:0.5rem">
+    {% endif %}
+
+    {% include 'whatsthedeal_app/partials/like_dislike.html' with post=post %}
+</article>

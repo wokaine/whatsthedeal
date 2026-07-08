@@ -165,11 +165,14 @@ class UserDetailView(generic.DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        user = context.get("object") or self.object
+        profile_user = context.get("object") or self.object
 
-        posts = Post.objects.filter(user=user)
+        posts = Post.objects.filter(user=profile_user).order_by("-created_at")
         context_posts = build_post_feed(posts=posts)
 
+        context["profile_user"] = profile_user
+        context["user"] = self.request.user
+        context["username"] = profile_user.username
         context["recent_user_posts"] = context_posts[:4]
         total_num_likes = 0
         total_num_dislikes = 0
@@ -253,7 +256,7 @@ def postpreference(request, postid, userpreference):
                 eachpost.dislikes +=1
             upref.save()
             eachpost.save()
-        return redirect(next_url or 'whatsthedeal:post-list')
+        return redirect(request.POST.get('next', '/'))
     else:
         eachpost= get_object_or_404(Post, id=postid)
         context = {'eachpost': eachpost, 'postid': postid}
