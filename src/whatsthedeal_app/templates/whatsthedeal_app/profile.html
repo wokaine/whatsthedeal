@@ -1,0 +1,57 @@
+<!-- templates/whatsthedeal_app/view.html -->
+{% extends "base.html" %}
+
+{% block title %}View User{% endblock %}
+
+{% block content %}
+    <div class="container" style="max-width:760px; margin:1.25rem auto">
+        <h1>User: {{ user.username }}</h1>
+        <div class="form-card">
+            <p><b>Posts made:</b> {{ number_posts }}</p>
+            <p><b>Total likes:</b> {{ total_num_likes }}</p>
+            <p><b>Total dislikes:</b> {{ total_num_dislikes }}</p>
+            <p><b>DealScore&trade;:</b> {{ score }}</p>
+        </div>
+
+        <h3>Recent Posts</h3>
+        <div class="feed-grid">
+            {% for p in recent_user_posts %}
+                <article class="post-card supermarket-{{ p.supermarket|lower|cut:"'"|cut:"-" }}">
+                    <div>
+                        <div class="meta">
+                            <small class="small">Posted: {{ p.date }}</small>
+                        </div>
+                        <h3>By: {{ p.user }}</h3>
+                        <p><b>Main:</b> {{ p.components.0 }}<p>
+                        {% if p.components|length > 3 %}
+                            <p><b>Sides:</b> {{ p.components.1 }}, {{ p.components.2 }}</p>
+                            <p><b>Drink:</b> {{ p.components.3 }}</p>
+                        {% else %}
+                            <p><b>Side:</b> {{ p.components.1 }}</p>
+                            <p><b>Drink:</b> {{ p.components.2 }}</p>
+                        {% endif %}
+                        </div>
+                        {% if p.image %}
+                        <img src="{{ p.image.url }}" alt="Meal deal image" style="max-width:100%; max-height:70%; border-radius:8px; margin-top:0.5rem">
+                        {% endif %}
+
+                        <div style="display:flex; gap:0.5rem; align-items:center; margin-top:0.6rem">
+                        <a class="btn btn-cream" href="{% url 'whatsthedeal:post-view' p.id %}">View</a>
+                        {% if user.is_authenticated %}
+                            <form method="POST" action="/posts/{{ p.id }}/preference/1/" style="display:inline">
+                            {% csrf_token %}
+                            <button class="btn" type="submit">👍({{ p.likes }})</button>
+                            </form>
+                            <form method="POST" action="/posts/{{ p.id }}/preference/2/" style="display:inline">
+                            {% csrf_token %}
+                            <button class="btn" type="submit">👎 ({{ p.dislikes }})</button>
+                            </form>
+                        {% endif %}
+                    </div>
+                </article>
+            {% endfor %}
+        </div>
+        <br>
+        <a class="btn btn-primary" href="{{request.META.HTTP_REFERER}}">Go back</a>
+    </div>
+{% endblock %}

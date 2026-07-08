@@ -8,7 +8,7 @@
         <article class="post-card supermarket-{{ post.supermarket|lower|cut:"'"|cut:"-" }}">
             <div>
                 <div class="meta">
-                    <strong>Posted by: {{ post.user }}</strong>
+                    <strong>Posted by: <a class="user-link" href="{% url 'whatsthedeal:user-view' username=post.user %}">{{ post.user }}</a></strong>
                     <small class="small">Posted: {{ post.date }}</small>
                 </div>
                 <br>
@@ -68,8 +68,12 @@
                         <p>{{ c.content }}</p>
                         <p class="small">{{ c.created_at }}</p>
                     </div>
+                {% empty %}
+                    <p>No comments yet.</p>
                 {% endfor %}
             </div>
         </div>
+        <br>
+        <a class="btn btn-primary" href="{{request.META.HTTP_REFERER}}">Go back</a>
     </div>
 {% endblock %}

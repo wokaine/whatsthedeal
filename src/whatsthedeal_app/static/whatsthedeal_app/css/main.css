@@ -140,6 +140,7 @@ body{
 .post-card .meta{display:flex; justify-content:space-between; align-items:center; gap:0.5rem}
 .post-card h3{margin:0 0 0.4rem 0}
 .post-card p{margin:0; color:inherit; opacity:0.95}
+.user-link {color:inherit; text-decoration:underline}
 
 /* ensure small/meta text inherits and remains visible against card backgrounds */
 .post-card .meta small{ color:inherit; opacity:0.9 }

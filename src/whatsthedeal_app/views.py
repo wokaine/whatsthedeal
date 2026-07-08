@@ -22,6 +22,7 @@ from .models import (
 )
 
 MULTI_SIDE_SUPERMARKETS = {"Booths"}
+ANONYMOUS_USERNAME = "anonymous"
 
 def index(request):
     return render(request, "index.html")
@@ -151,6 +152,51 @@ class PostDetailView(generic.DetailView):
             Comment.objects.create(post=obj, user=user, content=content)
         return redirect('whatsthedeal:post-view', pk=pk)
 
+class UserDetailView(generic.DetailView):
+    model = get_user_model()
+    template_name = 'whatsthedeal_app/profile.html'
+    slug_field = "username"
+    slug_url_kwarg = "username"
+
+    def get_object(self, queryset=None):
+        queryset = queryset or self.get_queryset()
+        username = self.kwargs.get(self.slug_url_kwarg)
+        return get_object_or_404(queryset, username=username)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user = context.get("object") or self.object
+
+        posts = Post.objects.filter(user=user)
+        context_posts = build_post_feed(posts=posts)
+
+        context["recent_user_posts"] = context_posts[:4]
+        total_num_likes = 0
+        total_num_dislikes = 0
+        for p in context_posts:
+            total_num_likes += p["likes"]
+            total_num_dislikes += p["dislikes"]
+
+        context["total_num_likes"] = total_num_likes
+        context["total_num_dislikes"] = total_num_dislikes
+        context["score"] = total_num_likes - total_num_dislikes
+
+        context["number_posts"] = len(context_posts)
+        return context
+
+    def post(self, request, *args, **kwargs):
+        username = kwargs.get("username")
+        obj = get_object_or_404(self.model, username=username)
+
+        # We do not want the user to see stats related to the guest user or admins
+        if username == ANONYMOUS_USERNAME or obj.is_superuser:
+            # Prepare to redirect to wherever the user came from
+            next_url = request.POST.get("next") or request.META.get("HTTP_REFERER")
+            if next_url and not url_has_allowed_host_and_scheme(next_url, {request.get_host()}):
+                next_url = None
+            return redirect(next_url or 'whatsthedeal:index')
+            
+        return redirect("whatsthedeal:user-view", username=obj.username)
 
 @login_required
 def postpreference(request, postid, userpreference):
@@ -218,7 +264,7 @@ def postpreference(request, postid, userpreference):
 
 def get_guest_user():
     User = get_user_model()
-    guest_username = "anonymous"
+    guest_username = ANONYMOUS_USERNAME
     guest_email = "guest@example.com"
     user, _ = User.objects.get_or_create(
         username=guest_username,

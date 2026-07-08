@@ -27,7 +27,7 @@
           <div class="meta">
             <small class="small">Posted: {{ p.date }}</small>
           </div>
-          <h3>By: {{ p.user }}</h3>
+          <h3>By: <a class="user-link" href="{% url 'whatsthedeal:user-view' username=p.user %}">{{ p.user }}</a></h3>
           <p><b>Main:</b> {{ p.components.0 }}<p>
           {% if p.components|length > 3 %}
             <p><b>Sides:</b> {{ p.components.1 }}, {{ p.components.2 }}</p>

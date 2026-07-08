@@ -272,6 +272,42 @@ class PostWorkflowTests(TestCase):
         self.assertEqual(comment.user, self.user)
 
 
+class UserProfileTests(TestCase):
+    def test_user_detail_view_uses_username_in_url(self):
+        user = get_user_model().objects.create_user(username="profile-user", password="secret123")
+
+        response = self.client.get(reverse("whatsthedeal:user-view", kwargs={"username": user.username}))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context["object"], user)
+
+    def test_user_cannot_view_anonymous_user(self):
+        guest_user = get_user_model().objects.create_user(username="anonymous", password="secret123")
+
+        response = self.client.post(
+            reverse("whatsthedeal:user-view", kwargs={"username": guest_user.username}),
+            {"next": reverse("whatsthedeal:post-list")},
+        )
+
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse("whatsthedeal:post-list"))
+
+    def test_user_cannot_view_superuser(self):
+        superuser = get_user_model().objects.create_superuser(
+            username="admin",
+            email="admin@example.com",
+            password="secret123",
+        )
+
+        response = self.client.post(
+            reverse("whatsthedeal:user-view", kwargs={"username": superuser.username}),
+            {"next": reverse("whatsthedeal:post-list")},
+        )
+
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse("whatsthedeal:post-list"))
+
+
 class ModelTests(TestCase):
     def test_supermarket_item_meal_deal_and_slot_models_are_created(self):
         supermarket = Supermarket.objects.create(name="Tesco")
