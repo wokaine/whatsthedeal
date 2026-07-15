@@ -1,7 +1,8 @@
-import json
+import json, re
 
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib import messages
 
 from django.shortcuts import render, redirect, get_object_or_404
@@ -9,7 +10,7 @@ from django.utils.http import url_has_allowed_host_and_scheme
 from django.http import Http404, JsonResponse
 from django.views import generic
 from django.urls import reverse
-from .forms import PostCreateForm, CommentForm
+from .forms import PostCreateForm, PostEditForm, CommentForm
 
 from .models import (
     Item,
@@ -200,6 +201,23 @@ class UserDetailView(generic.DetailView):
             return redirect(next_url or reverse("whatsthedeal:index"))
 
         return super().dispatch(request, *args, **kwargs)
+    
+class PostEditView(LoginRequiredMixin, UserPassesTestMixin, generic.UpdateView):
+    model = Post
+    form_class = PostEditForm
+    template_name = "whatsthedeal_app/post_form.html"
+
+    def test_func(self):
+        return self.get_object().user == self.request.user
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["multi_side_supermarkets"] = json.dumps(list(MULTI_SIDE_SUPERMARKETS))
+        context["is_edit"] = True
+        return context
+
+    def get_success_url(self):
+        return reverse("whatsthedeal:post-view", kwargs={"pk": self.object.pk})
 
 @login_required
 def postpreference(request, postid, userpreference):
@@ -281,8 +299,46 @@ def get_guest_user():
     )
     return user
 
-def normalize_item_name(value):
-    return " ".join(value.strip().title().split())
+def normalize_item_name(text):
+    if not text:
+        return ""
+
+    minor_words = {
+        'and', 'as', 'but', 'for', 'if', 'nor', 'or', 'so', 'yet',
+        'a', 'an', 'the',
+        'at', 'by', 'for', 'in', 'of', 'off', 'on', 'per', 'to', 'up', 'via'
+    }
+
+    # Lowercase the entire string first
+    text = text.lower()
+    
+    # Regex to find all words (including those with apostrophes)
+    words = re.findall(r"\b[\w']+\b", text)
+    if not words:
+        return text
+
+    def replace_word(match, index, total):
+        word = match.group(0)
+        # Always capitalize the first and last word
+        if index == 0 or index == total - 1:
+            return word.capitalize()
+        # Keep minor words lowercase
+        if word in minor_words:
+            return word
+        return word.capitalize()
+
+    # Reconstruct the string with proper capitalization
+    word_count = len(words)
+    word_index = 0
+    
+    def replacer(match):
+        nonlocal word_index
+        result = replace_word(match, word_index, word_count)
+        word_index += 1
+        return result
+
+    # Replace word boundaries with our capitalized versions
+    return re.sub(r"\b[\w']+\b", replacer, text)
 
 def build_post_feed(posts):
     slot_order = {"MAIN": 0, "SIDE": 1, "DRINK": 2}

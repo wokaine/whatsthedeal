@@ -3,6 +3,9 @@
         <div class="meta">
             <strong>Posted by: <a class="user-link" href="{% url 'whatsthedeal:user-view' username=post.user %}">{{ post.user }}</a></strong>
             <small class="small">Posted: {{ post.date }}</small>
+            {% if user == post.user %}
+                <small class="small"><a style="text-decoration: none;" href="{% url 'whatsthedeal:post-edit' pk=post.id %}">✏️</a></small>
+            {% endif %}
         </div>
         <br>
         <p><b>Supermarket:</b> {{ post.supermarket }}</p>
@@ -25,5 +28,7 @@
         <img src="{{ post.image.url }}" alt="Meal deal image" style="max-width:100%; border-radius:8px; margin-top:0.5rem">
     {% endif %}
 
-    {% include 'whatsthedeal_app/partials/like_dislike.html' with post=post %}
+    <div style="display:flex; gap:0.5rem; align-items:center; margin-top:0.6rem">
+        {% include 'whatsthedeal_app/partials/like_dislike.html' with post=post %}
+    </div>
 </article>

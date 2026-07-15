@@ -24,7 +24,7 @@ class PostWorkflowTests(TestCase):
             username="tester",
             password="testpass123",
         )
-        self.supermarket = Supermarket.objects.create(name="Booths")
+        self.supermarket = Supermarket.objects.create(name="Tesco")
 
     def _create_post(self, *, description="A tasty deal", user=None, supermarket=None):
         user = user or self.user
@@ -220,11 +220,12 @@ class PostWorkflowTests(TestCase):
 
     def test_guest_user_can_create_a_two_sided_booths_meal_deal_post(self):
         self.client.logout()
+        supermarket = Supermarket.objects.create(name="Booths")
 
         response = self.client.post(
             reverse("whatsthedeal:post-create"),
             {
-                "supermarket": self.supermarket.pk,
+                "supermarket": supermarket.pk,
                 "main": "Chicken Burger",
                 "side": "Fries",
                 "side_2": "Onion Rings",
@@ -270,6 +271,38 @@ class PostWorkflowTests(TestCase):
         self.assertEqual(response.status_code, 302)
         comment = Comment.objects.get(content="I don't like this meal deal!")
         self.assertEqual(comment.user, self.user)
+
+    def test_user_can_edit_post(self):
+        self.client.force_login(self.user)
+        self._create_post(description="My Deal")
+        post = Post.objects.get(description="My Deal")
+
+        response = self.client.post(
+            reverse("whatsthedeal:post-edit", kwargs={'pk': post.id}),
+            {
+                "description": "I've changed this description!"
+            }
+        )
+
+        self.assertEqual(response.status_code, 302)
+        post = Post.objects.get(description="I've changed this description!")
+        self.assertIsNotNone(post)
+
+    def test_user_cannot_edit_other_users_post(self):
+        self.client.force_login(self.user)
+        second_user = get_user_model().objects.create_user(
+            username="tester2",
+            password="testpass123",
+        )
+        post = self._create_post(description="My Deal", user=second_user)
+        response = self.client.post(
+            reverse("whatsthedeal:post-edit", kwargs={'pk': post.id}),
+            {
+                "description": "I've changed this description!"
+            }
+        )
+        self.assertEqual(response.status_code, 403)
+
 
 
 class UserProfileTests(TestCase):

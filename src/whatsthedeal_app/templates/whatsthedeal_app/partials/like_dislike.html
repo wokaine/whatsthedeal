@@ -1,16 +1,13 @@
-<div style="display:flex; gap:0.5rem; align-items:center; margin-top:0.6rem">
-    <a class="btn btn-cream" href="{% url 'whatsthedeal:post-view' post.id %}">View</a>
-    {% if user.is_authenticated %}
-        <form id="likebutton" method="POST" action="{% url 'whatsthedeal:post-preference' post.id 1 %}" style="display:inline">
-            {% csrf_token %}
-            <input type="hidden" name="next" value="{{ request.build_absolute_uri }}">
-            <button class="btn btn-ghost" type="submit">👍 ({{ post.likes }})</button>
-        </form>
+{% if user.is_authenticated %}
+    <form id="likebutton" method="POST" action="{% url 'whatsthedeal:post-preference' post.id 1 %}" style="display:inline">
+        {% csrf_token %}
+        <input type="hidden" name="next" value="{{ request.build_absolute_uri }}">
+        <button class="btn btn-ghost" type="submit">👍 ({{ post.likes }})</button>
+    </form>
 
-        <form id="dislikebutton" method="POST" action="{% url 'whatsthedeal:post-preference' post.id 2 %}" style="display:inline">
-            {% csrf_token %}
-            <input type="hidden" name="next" value="{{ request.build_absolute_uri }}">
-            <button class="btn btn-ghost" type="submit">👎 ({{ post.dislikes }})</button>
-        </form>
-    {% endif %}
-</div>
+    <form id="dislikebutton" method="POST" action="{% url 'whatsthedeal:post-preference' post.id 2 %}" style="display:inline">
+        {% csrf_token %}
+        <input type="hidden" name="next" value="{{ request.build_absolute_uri }}">
+        <button class="btn btn-ghost" type="submit">👎 ({{ post.dislikes }})</button>
+    </form>
+{% endif %}
