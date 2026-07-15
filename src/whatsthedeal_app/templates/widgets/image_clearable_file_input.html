@@ -1,0 +1,20 @@
+<div class="image-upload-wrapper">
+  {% if widget.is_initial %}
+    <div>
+      <p class="small">{{ widget.initial_text }}:</p>
+      <img src="{{ widget.value.url }}" alt="Current Image" style="max-width: 150px; display: block; margin-bottom: 10px; border-radius: 4px;">
+      
+      {% if not widget.required %}
+        <div style="padding-bottom: 10px;">
+          <input type="checkbox" name="{{ widget.checkbox_name }}" id="{{ widget.checkbox_id }}"{% if widget.attrs.disabled %} disabled{% endif %}>
+          <label for="{{ widget.checkbox_id }}">{{ widget.clear_checkbox_label }}</label>
+        </div>
+      {% endif %}
+    </div>
+  {% endif %}
+
+  <div class="form-row" style="margin-top: 10px;">
+    <label for="{{ widget.attrs.id }}">{{ widget.input_text }}</label>
+    <input type="{{ widget.type }}" name="{{ widget.name }}"{% include "django/forms/widgets/attrs.html" %}>
+  </div>
+</div>
