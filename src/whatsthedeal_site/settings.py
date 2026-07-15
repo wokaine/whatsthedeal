@@ -67,6 +67,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'whatsthedeal_app.context_processors.comment_notifications',
             ],
         },
     },
@@ -167,3 +168,4 @@ STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "static"
 
 ACCOUNT_USER_MODEL_EMAIL_FIELD = None
+ACCOUNT_ADAPTER = 'whatsthedeal_app.adapter.NotificationAccountAdapter'
